@@ -9,129 +9,141 @@
 <meta name="apple-mobile-web-app-title" content="人間力30日">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
-<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}[hidden]{display:none!important}</style>
-</head>
-<body>
 <title>人間力30日計画</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
 <style>
-/* layout: phone-first checklist. hero progress card, sticky week tabs, one card per theme with big tap rows */
+/* layout: phone app. summary card, sticky day strip, one day at a time (知識3分 / 実践5分 / 内省2分), notes list */
 :root {
+  color-scheme: light;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
   --bg: #F2F4F8; --surface: #FFFFFF; --fg: #18202F; --muted: #586277; --line: #DCE1EA;
-  --accent: #2D4AA8; --on-accent: #FFFFFF; --track: #DDE3EE; --now: #D98A00; --on-c: #FFFFFF;
-  --c-inner: #5A48B8; --t-inner: #EEEBFA; --x-inner: #382C86;
-  --c-comm: #0E8575; --t-comm: #E4F4F1; --x-comm: #0A5A50;
-  --c-life: #B06F00; --t-life: #FBF0DC; --x-life: #6E4500;
-  --c-body: #C4452A; --t-body: #FBEAE5; --x-body: #7F2A18;
+  --accent: #2D4AA8; --on-accent: #FFFFFF; --track: #DDE3EE; --now: #D98A00;
+  --t-inner: #EEEBFA; --x-inner: #382C86;
+  --t-comm: #E4F4F1; --x-comm: #0A5A50;
+  --t-life: #FBF0DC; --x-life: #6E4500;
+  --t-body: #FBEAE5; --x-body: #7F2A18;
   --font: "Zen Kaku Gothic New", "Hiragino Kaku Gothic ProN", "Noto Sans JP", system-ui, sans-serif;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #0E121A; --surface: #161B26; --fg: #E7EBF3; --muted: #98A2B6; --line: #262E3D;
-    --accent: #8FA5F5; --on-accent: #0E121A; --track: #262E3D; --now: #F0B03A; --on-c: #0E121A;
-    --c-inner: #A398F3; --t-inner: #211E3B; --x-inner: #CEC8F9;
-    --c-comm: #4FC4B2; --t-comm: #12302C; --x-comm: #A5E6DB;
-    --c-life: #E3A93C; --t-life: #33270F; --x-life: #F3D699;
-    --c-body: #EE8468; --t-body: #37201A; --x-body: #F8C4B6;
+    --accent: #8FA5F5; --on-accent: #0E121A; --track: #262E3D; --now: #F0B03A;
+    --t-inner: #211E3B; --x-inner: #CEC8F9;
+    --t-comm: #12302C; --x-comm: #A5E6DB;
+    --t-life: #33270F; --x-life: #F3D699;
+    --t-body: #37201A; --x-body: #F8C4B6;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #0E121A; --surface: #161B26; --fg: #E7EBF3; --muted: #98A2B6; --line: #262E3D;
-  --accent: #8FA5F5; --on-accent: #0E121A; --track: #262E3D; --now: #F0B03A; --on-c: #0E121A;
-  --c-inner: #A398F3; --t-inner: #211E3B; --x-inner: #CEC8F9;
-  --c-comm: #4FC4B2; --t-comm: #12302C; --x-comm: #A5E6DB;
-  --c-life: #E3A93C; --t-life: #33270F; --x-life: #F3D699;
-  --c-body: #EE8468; --t-body: #37201A; --x-body: #F8C4B6;
+  --accent: #8FA5F5; --on-accent: #0E121A; --track: #262E3D; --now: #F0B03A;
+  --t-inner: #211E3B; --x-inner: #CEC8F9;
+  --t-comm: #12302C; --x-comm: #A5E6DB;
+  --t-life: #33270F; --x-life: #F3D699;
+  --t-body: #37201A; --x-body: #F8C4B6;
   color-scheme: dark;
 }
+[hidden] { display: none !important; }
 * { box-sizing: border-box; }
-body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 16px; line-height: 1.6; padding-bottom: 56px; -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 16px; line-height: 1.7; padding-bottom: 56px; -webkit-text-size-adjust: 100%; }
 body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); background: var(--bg); z-index: 20; }
 .inner { max-width: 560px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
-button { font: inherit; color: inherit; cursor: pointer; }
-button:focus-visible, input:focus-visible + .box { outline: 3px solid var(--accent); outline-offset: 2px; }
+button, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+button:focus-visible, textarea:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 
-.hero { padding-block: 20px 16px; }
-.hero h1 { margin: 0; font-size: 20px; font-weight: 700; letter-spacing: 0.02em; text-wrap: balance; }
+.hero { padding-block: 20px 14px; }
+.hero h1 { margin: 0; font-size: 20px; font-weight: 700; letter-spacing: 0.02em; }
 .hero .sub { margin: 2px 0 14px; color: var(--muted); font-size: 14px; }
 .card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 18px; }
 .stat { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
-.pct { font-size: 48px; line-height: 1; font-weight: 700; font-variant-numeric: tabular-nums; }
-.pct small { font-size: 20px; font-weight: 500; margin-left: 2px; }
-.stat-r { text-align: right; font-size: 14px; color: var(--muted); font-variant-numeric: tabular-nums; min-width: 0; }
-.stat-r b { color: var(--fg); font-weight: 700; }
+.big { font-size: 44px; line-height: 1; font-weight: 700; font-variant-numeric: tabular-nums; }
+.big small { font-size: 18px; font-weight: 500; margin-left: 4px; color: var(--muted); }
+.stat-r { text-align: right; font-size: 14px; color: var(--muted); min-width: 0; }
 .bar { height: 10px; background: var(--track); border-radius: 999px; overflow: hidden; margin-top: 14px; }
 .bar > i { display: block; height: 100%; width: 0; background: var(--accent); border-radius: 999px; transition: width .3s ease; }
 .startbtn { margin-top: 14px; width: 100%; min-height: 48px; border: 0; border-radius: 12px; background: var(--accent); color: var(--on-accent); font-weight: 700; font-size: 16px; }
-.startbtn:active { transform: scale(.98); }
 
-.tabs { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); border-bottom: 1px solid var(--line); padding-block: 8px; }
-.tabrow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
-.tab { position: relative; min-height: 52px; border: 1px solid var(--line); background: var(--surface); border-radius: 12px; padding: 6px 2px; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.25; }
-.tab .tn { font-size: 14px; font-weight: 700; }
-.tab .tc { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
-.tab[aria-selected="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
-.tab[aria-selected="true"] .tc { color: var(--on-accent); opacity: .85; }
-.tab .now { position: absolute; top: 5px; right: 6px; width: 7px; height: 7px; border-radius: 50%; background: var(--now); }
+.stripwrap { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); border-bottom: 1px solid var(--line); padding-block: 8px; }
+.strip { position: relative; display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
+.strip::-webkit-scrollbar { display: none; }
+.chip { position: relative; flex: none; width: 44px; height: 48px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); font-size: 15px; font-weight: 500; font-variant-numeric: tabular-nums; display: grid; place-items: center; padding: 0; }
+.chip.part { border: 2px solid var(--accent); color: var(--accent); font-weight: 700; }
+.chip.full { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 700; }
+.chip[aria-selected="true"]::after { content: ""; position: absolute; left: 50%; bottom: 5px; width: 16px; height: 3px; margin-left: -8px; border-radius: 2px; background: currentColor; }
+.chip .todaydot { position: absolute; top: 4px; right: 5px; width: 7px; height: 7px; border-radius: 50%; background: var(--now); }
 
-.weekhead { padding-block: 18px 6px; }
-.weekhead h2 { margin: 0; font-size: 18px; font-weight: 700; text-wrap: balance; }
-.weekhead p { margin: 2px 0 0; font-size: 14px; color: var(--muted); }
-.theme { margin-top: 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
-.theme.t-inner { --c: var(--c-inner); --t: var(--t-inner); --x: var(--x-inner); }
-.theme.t-comm { --c: var(--c-comm); --t: var(--t-comm); --x: var(--x-comm); }
-.theme.t-life { --c: var(--c-life); --t: var(--t-life); --x: var(--x-life); }
-.theme.t-body { --c: var(--c-body); --t: var(--t-body); --x: var(--x-body); }
-.th { margin: 0; display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: var(--t); color: var(--x); font-size: 14px; font-weight: 700; }
-.th .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--c); flex: none; }
-.th .tt { flex: 1; min-width: 0; }
-.th .tcount { font-variant-numeric: tabular-nums; font-weight: 500; }
-.theme ul { list-style: none; margin: 0; padding: 0; }
-.theme li + li { border-top: 1px solid var(--line); }
-.task { display: flex; gap: 14px; align-items: flex-start; padding: 14px; min-height: 56px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-.task input { position: absolute; opacity: 0; width: 1px; height: 1px; }
-.box { flex: none; width: 26px; height: 26px; margin-top: 1px; border-radius: 8px; border: 2px solid var(--muted); display: grid; place-items: center; transition: background .15s, border-color .15s; }
-.box::after { content: ""; width: 12px; height: 7px; border-left: 3px solid var(--on-c); border-bottom: 3px solid var(--on-c); transform: rotate(-45deg) translate(1px, -1px) scale(0); transition: transform .15s; }
-.task input:checked + .box { background: var(--c); border-color: var(--c); }
-.task input:checked + .box::after { transform: rotate(-45deg) translate(1px, -1px) scale(1); }
-.txt { min-width: 0; overflow-wrap: anywhere; font-size: 16px; }
-.task input:checked ~ .txt { color: var(--muted); text-decoration: line-through; text-decoration-thickness: 1px; }
+.dayhead { padding-block: 18px 4px; }
+.phase { margin: 0; font-size: 13px; color: var(--muted); }
+.dayhead h2 { margin: 2px 0 0; font-size: 20px; font-weight: 700; text-wrap: balance; }
+.dayhead .state { margin: 4px 0 0; font-size: 14px; font-weight: 700; color: var(--accent); }
+.step { margin-top: 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+.sh { display: flex; align-items: baseline; justify-content: space-between; padding: 12px 16px 0; }
+.sh b { font-size: 15px; font-weight: 700; }
+.sh span { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.sb { padding: 8px 16px 14px; }
+.sb p { margin: 0; overflow-wrap: anywhere; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.tag { font-size: 12px; font-weight: 700; padding: 2px 10px; border-radius: 999px; line-height: 1.7; }
+.tag.t-inner { background: var(--t-inner); color: var(--x-inner); }
+.tag.t-comm { background: var(--t-comm); color: var(--x-comm); }
+.tag.t-life { background: var(--t-life); color: var(--x-life); }
+.tag.t-body { background: var(--t-body); color: var(--x-body); }
+.ask { color: var(--muted); font-size: 14px; margin-bottom: 8px !important; }
+textarea { width: 100%; min-height: 96px; resize: vertical; padding: 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); line-height: 1.6; font-size: 16px; }
+.done { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; min-height: 52px; border: 0; border-top: 1px solid var(--line); background: transparent; font-weight: 700; font-size: 16px; }
+.done::before { content: ""; width: 22px; height: 22px; border-radius: 7px; border: 2px solid var(--muted); flex: none; }
+.done[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+.done[aria-pressed="true"]::before { content: "✓"; display: grid; place-items: center; font-size: 15px; line-height: 1; font-weight: 700; border-color: var(--on-accent); background: var(--on-accent); color: var(--accent); }
+.nav { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+.navbtn { min-height: 48px; border: 1px solid var(--line); background: var(--surface); border-radius: 12px; font-size: 15px; font-weight: 500; }
+.navbtn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 700; }
+.navbtn:disabled { opacity: .4; cursor: default; }
 
-.foot { margin-top: 28px; display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
-.note { margin: 0; font-size: 13px; color: var(--muted); }
+.notes { margin-top: 32px; }
+.notes h3 { margin: 0 0 8px; font-size: 16px; font-weight: 700; }
+.note { display: block; width: 100%; text-align: left; margin-top: 8px; padding: 12px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
+.note .nh { font-size: 13px; color: var(--muted); }
+.note .nt { margin-top: 2px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; font-size: 15px; }
+.empty { margin: 0; font-size: 14px; color: var(--muted); }
+
+.foot { margin-top: 32px; display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
+.fnote { margin: 0; font-size: 13px; color: var(--muted); }
 .ghost { min-height: 44px; padding: 0 16px; border: 1px solid var(--line); background: transparent; border-radius: 10px; font-size: 14px; color: var(--muted); }
 .confirm { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; font-size: 14px; }
-.danger { min-height: 44px; padding: 0 16px; border: 0; border-radius: 10px; background: var(--c-body); color: var(--on-c); font-weight: 700; font-size: 14px; }
+.danger { min-height: 44px; padding: 0 16px; border: 0; border-radius: 10px; background: #C4452A; color: #fff; font-weight: 700; font-size: 14px; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
-
+</head>
+<body>
 <header class="hero">
   <div class="inner">
-    <h1>人間力トータルアップ</h1>
-    <p class="sub">30日行動計画</p>
+    <h1>人間力30日計画</h1>
+    <p class="sub">1日10分　知識3分・実践5分・内省2分</p>
     <div class="card">
       <div class="stat">
-        <div class="pct" aria-live="polite"><span id="pct">0</span><small>%</small></div>
-        <div class="stat-r"><div><b id="done">0</b> / <span id="total">40</span> 完了</div><div id="day"></div></div>
+        <div class="big"><span id="pct">0</span><small>%</small></div>
+        <div class="stat-r"><div>完了 <b id="days">0</b> / 30日</div><div id="today"></div></div>
       </div>
-      <div class="bar" role="progressbar" aria-label="全体の進捗" aria-valuemin="0" aria-valuemax="100" id="bar"><i id="barfill"></i></div>
+      <div class="bar" id="bar" role="progressbar" aria-label="全体の進捗" aria-valuemin="0" aria-valuemax="100"><i id="fill"></i></div>
       <button class="startbtn" id="startbtn" type="button">今日からスタートする</button>
     </div>
   </div>
 </header>
-
-<nav class="tabs" aria-label="週の切り替え">
-  <div class="inner"><div class="tabrow" id="tabrow" role="tablist"></div></div>
-</nav>
-
+<nav class="stripwrap" aria-label="日付の切り替え"><div class="inner"><div class="strip" id="strip"></div></div></nav>
 <main class="inner">
-  <div id="list"></div>
+  <article id="day"></article>
+  <section class="notes" aria-labelledby="nh">
+    <h3 id="nh">これまでの内省</h3>
+    <div id="notes"></div>
+  </section>
   <div class="foot">
-    <p class="note" id="note">この端末に保存します</p>
+    <p class="fnote" id="fnote">記録はこの端末に保存されます。ホーム画面に追加して使うと、保存が安定します。</p>
     <button class="ghost" id="resetbtn" type="button">最初からやり直す</button>
     <div class="confirm" id="resetconfirm" hidden>
-      <span>チェックをすべて消します。</span>
+      <span>チェックと内省メモをすべて消します。</span>
       <button class="danger" id="resetyes" type="button">リセットする</button>
       <button class="ghost" id="resetno" type="button">やめる</button>
     </div>
@@ -141,204 +153,314 @@ button:focus-visible, input:focus-visible + .box { outline: 3px solid var(--acce
 <script>
 (function () {
   'use strict';
-  var KEY = 'ningenryoku30:v1';
-  var ORDER = ['inner', 'comm', 'life', 'body'];
-  var THEMES = { inner: '自我・本質の理解', comm: '人間関係・コミュニケーション', life: 'ライフワーク・使命の発見', body: '身体・環境・睡眠の最適化' };
-  var WEEKS = [
-    { name: '1週目', range: 'Day 1〜7', lead: '自己を観察する目を育てる', tasks: {
-      inner: ['毎朝5分「今の感情・思考を紙に書き出す」習慣を開始する', '自分が反射的に怒る・怖れる場面を1つメモし、「これはエゴの反応か？」と問いかける', '夜、親との記憶で未完了の感情がないかノートに書き出す（完了させなくてよい）'],
-      comm: ['1日1回、会話で自分の頭を空にして相手の話を「評価なし」で聞く練習をする', '「あの人は自分を攻撃している」と感じた瞬間を記録し、「本当にそうか？」と一度立ち止まる'],
-      life: ['「子供の頃に夢中になったこと」を10個書き出す', '今の仕事の中で「お金なしでもやりたい」と思う要素があるか探してみる'],
-      body: ['就寝1時間前にスマホ・LEDを落とし、暗い間接照明に切り替える', '砂糖・加工食品を1日1つ削減してみる。何を食べたか記録する', '毎晩寝る前に「今日の出来事を中立的に振り返る自省（Jisei）」を3分行う'] } },
-    { name: '2週目', range: 'Day 8〜14', lead: '行動パターンを書き換える', tasks: {
-      inner: ['自動反応してしまった場面を振り返り、「本質から選ぶとどう行動したか？」を書く', '「勝ちたい・支配したい」衝動を感じた場面をキャッチし、ノートに記録する', '感情が揺れた後、5分間だけ「感情の主人」として観察者に戻る練習をする'],
-      comm: ['親・パートナー・友人に「最近どう？」と聞き、アドバイスせずに5分聴き切る', 'フォース（強制）を使いそうな場面で意識的に止まり、パワー（在り方）で関わる実験をする'],
-      life: ['「自分の能力で他者の役に立てること」を3つ書き、それを仕事にしている人を調べる', 'ライスワークとライフワークのバランスを現在何対何か評価し、理想の状態を描く'],
-      body: ['毎日同じ時間に就寝・起床する（±30分以内）リズムをつくる', '寝る前に「今夜、夢の中でも意識を保とう」と意図を設定する（明晰夢の入口）', 'スマホを寝室の外に置いて眠る'] } },
-    { name: '3週目', range: 'Day 15〜21', lead: '関係性と使命を深める', tasks: {
-      inner: ['親へのわだかまりが残っている感情を紙に書き出し、手紙の形で「感謝を見つける」練習をする', '「無条件に人を受け入れる」感覚を、小さな場面（店員・同僚など）で実践する', '朝10分、静かな時間を設けて「今ここ」に意識を戻す訓練をする'],
-      comm: ['1週間で1人、「この人の奥にある本当の願いは何か？」を意識して対話する', '自分が学んだ知識を誰かに分かりやすく話して教える（アウトプットによる定着）'],
-      life: ['「社会のどんな問題を解決したいか？」を3つ書き、最も心が動くものを選ぶ', 'ライフワーク仮説を1文で書く：「私は〇〇を通じて△△な人の役に立つ」'],
-      body: ['裸足で地面に触れる「アーシング」を1日10分実践する', '朝日を浴びながら5分外に出る習慣をつくる', '夢を見たらすぐメモする「夢日記」を開始する'] } },
-    { name: '4週目', range: 'Day 22〜30', lead: '統合と宣言', tasks: {
-      inner: ['30日間のノートを読み返し、「自我の反応パターン」を3つ言語化する', '「本質から生きた」と感じた瞬間トップ3を書き、共通するものを見つける', '親への感謝を声に出す・手紙を送る・心の中で完了させる儀式を行う'],
-      comm: ['大切な人に「あなたのここが好き・ありがとう」を直接伝える場をつくる', '過去1ヶ月で関係が変化した人間関係を振り返り、何が変わったかを記録する'],
-      life: ['ライフワーク宣言を完成させ、信頼できる人に話す', '次の90日で「ライフワークに向けた最初の一歩」を1つ決め、日程を入れる'],
-      body: ['30日間の身体・睡眠の変化を振り返り、最も効果があった習慣を3つ選ぶ', '31日目以降も続ける「マイ習慣リスト」を作成する', '自省（Jisei）を毎晩の「1日の完了儀式」として習慣化する'] } }
+  var KEY = 'ningenryoku30:v2';
+  var TAGS = {
+    psy: { n: '心理学で裏付けあり', c: 'comm' },
+    hist: { n: '歴史＋解釈', c: 'life' },
+    view: { n: '講師の考え', c: 'inner' },
+    chk: { n: '根拠が弱い・要検証', c: 'body' }
+  };
+  var PH = [
+    { n: '1週目', t: '自分を観察する' },
+    { n: '2週目', t: '親子関係と過去' },
+    { n: '3週目', t: '人間関係と対話' },
+    { n: '4週目', t: '社会を見る目' },
+    { n: '最終', t: '使命と統合' }
+  ];
+  var STEPS = [
+    { id: 'k', name: '知識', min: 3, verb: '読んだ' },
+    { id: 'a', name: '実践', min: 5, verb: 'やった' },
+    { id: 'r', name: '内省', min: 2, verb: '記録した' }
+  ];
+  var DAYS = [
+    { ph: 0, t: '感情に名前をつける', tags: ['psy'],
+      k: '感情が動いた瞬間、人は考える前に反応します。そのとき「今、不安を感じている」のように感情を言葉にすると、脳の感情反応（扁桃体）が落ち着くという研究があります。講師の言う「機械的な反応に気づく」第一歩にあたります。',
+      a: '今日、イラッとした・不安になった・焦った瞬間を1つ見つけて、「今、〇〇を感じた」と心の中で言葉にする。',
+      r: 'どんな場面で、何を感じた？' },
+    { ph: 0, t: '反応のクセを知る', tags: ['view', 'psy'],
+      k: '講師は、性格を幼少期の記憶でできた「鎧」、反応を「機械的」と呼びます。これは講師の見方（たとえ）です。心理学では、似た考えを「スキーマ」（育ちの中で作られた思考や反応の型）と呼びます。',
+      a: '繰り返してしまう反応（すぐ謝る、断れない、つい怒るなど）を1つ書き出す。',
+      r: 'それはいつ頃からある？　誰の前で出やすい？' },
+    { ph: 0, t: '観察者になる', tags: ['psy'],
+      k: '思考や感情を、良し悪しの評価をせずに眺める練習（マインドフルネス）は、ストレスや不安を和らげる効果が研究で示されています。効果は中程度までで、万能ではありません。',
+      a: '3分間座って、呼吸を感じる。考えが浮かんだら「考えている」と気づいて、呼吸に戻る。',
+      r: 'どんな考えが浮かんだ？　戻るとき、どう感じた？' },
+    { ph: 0, t: '自省と反省を分ける', tags: ['view', 'psy'],
+      k: '講師は、自分を責める「反省」と、中立に一日を見る「自省」を区別します。心理学でも、自分を責めるより、失敗に思いやりを向けられる人のほうが、次の行動を改善しやすいとされています。',
+      a: '寝る前に、今日の出来事を3つ、良し悪しをつけずに事実だけ書く。',
+      r: '書いてみて、気づいたことは？' },
+    { ph: 0, t: '夜の光と睡眠', tags: ['psy', 'chk'],
+      k: '夜の強い光、特にブルーライトは、睡眠ホルモン（メラトニン）の分泌を遅らせ、寝つきに影響することが確かめられています。一方、「家庭用のLEDが網膜を壊す」という主張は、通常の使い方では確かな証拠が見当たりません。',
+      a: '寝る1時間前から、照明を暗めの暖色にして、スマホを手から離す。',
+      r: '寝つきや朝の目覚めは、いつもと違った？' },
+    { ph: 0, t: '寝る前の一言', tags: ['psy', 'chk'],
+      k: '睡眠中に記憶が整理・定着することは、多くの研究で支持されています。ただ、「寝ている間に潜在意識を書き換える」「明晰夢で自己を変える」といった主張は、確立した方法ではありません。',
+      a: '寝る前に、今日よかったことを1つ思い出し、明日やることを1つ決める（祈りの時間にしてもよい）。',
+      r: '朝起きたとき、気分はどうだった？' },
+    { ph: 0, t: '1週間のふり返り', tags: ['psy'],
+      k: '習慣が定着するまでの日数は人によって大きく違い、研究では平均で約2か月とされています。30日は入口です。小さく続けることが大事です。',
+      a: '今週で一番気づきのあった日を選び、その理由を1行で書く。',
+      r: '来週も続けたいことは？' },
+    { ph: 1, t: '幼少期と今', tags: ['psy'],
+      k: '愛着理論では、幼少期の養育者との関係が、大人の人間関係の型に影響すると考えます。ただし運命ではなく、大人になってからの経験や気づきで変えていけると考えられています。',
+      a: '親や養育者との関係で、今も影響していると感じるクセを1つ書く。つらくなったら無理せず止める。',
+      r: 'それは今、誰との関係に出ている？' },
+    { ph: 1, t: '親の背景を知る', tags: ['psy'],
+      k: '親の接し方も、その親の育ちや時代の影響を受けています（世代間の連鎖）。背景を理解することは、許すことや、同意することとは別です。',
+      a: '親の生い立ちや時代背景で知っていることを3つ書く。知らないことは「知らない」と書く。',
+      r: '書いて、見え方は少し変わった？' },
+    { ph: 1, t: '受け取ったものを数える', tags: ['view', 'psy'],
+      k: '講師は、親との関係を完了し、感謝と愛を受け取り直すことが人生の土台だと言います。感謝を書き出す習慣は、幸福感を高めるという研究があります。',
+      a: '親（養育者）にしてもらったことを、小さなことでよいので5つ書く。',
+      r: '一番意外だったものは？' },
+    { ph: 1, t: '送らない手紙', tags: ['psy'],
+      k: '気持ちを書き出す筆記は、感情の整理に役立つことがあります。ただし、書くことで気分が重くなる人もいます。',
+      a: '親に言えなかったことを、送らない手紙として5分書く。つらくなったら途中でやめてよい。強い苦しさが続くときは、信頼できる人や専門家に相談を。',
+      r: '書き終えて、体や気分はどう？' },
+    { ph: 1, t: '距離感を決める', tags: ['psy'],
+      k: '関係を完了することは、必ずしも仲良くなることではありません。無理のない境界線（バウンダリー）を決めることも、健全な関わり方です。',
+      a: '親との関係で「これはできる」「これはしない」を1つずつ決める。',
+      r: '決めて、気持ちは軽くなった？' },
+    { ph: 1, t: '小さな一歩', tags: ['psy'],
+      k: '気持ちの整理だけでなく、小さな行動が関係を動かします。短い連絡でも、関係の空気は変わることがあります。',
+      a: '親に短い連絡（近況やありがとう）を1通送る。連絡が難しい事情があれば、心の中で感謝を伝える。',
+      r: '連絡してみて（または伝えて）どう感じた？' },
+    { ph: 1, t: '2週間のふり返り', tags: ['psy'],
+      k: '経験をふり返る時間を取ると、同じ経験をただ重ねるより、成果が上がりやすいという研究があります。',
+      a: 'この2週間のメモを読み返し、見え方が変わったことを1つ選ぶ。',
+      r: '次の2週間で試したいことは？' },
+    { ph: 2, t: '聞く：空の空間', tags: ['view', 'psy'],
+      k: '講師は、自分の頭を空にして、相手が話せる「空の空間」になることを勧めます。心理学の「積極的傾聴」（評価せず、最後まで聞く）とよく重なります。',
+      a: '今日、誰か1人の話を、アドバイスも評価もせずに最後まで聞く。',
+      r: '聞いている間、自分の中に何が起きた？' },
+    { ph: 2, t: '意図を聴く', tags: ['view', 'psy'],
+      k: '言葉の奥にある願いを聴く、という考え方です。実際には、相手の話を自分の言葉で返して確かめる「反映」が、有効な方法とされています。',
+      a: '会話の中で1回、「つまり〇〇が大事なんだね」と返して、合っているか確かめる。',
+      r: '相手の反応はどうだった？' },
+    { ph: 2, t: '事実と解釈を分ける', tags: ['psy'],
+      k: '「嫌われたかも」のように相手の心を決めつけることは、認知行動療法で「読心」という考えのクセに分類されます。事実と解釈を分けるだけで、不安が下がることがあります。',
+      a: '「嫌われたかも」と感じた場面を1つ選び、事実と解釈を分けて書く。',
+      r: '別の解釈はあり得る？' },
+    { ph: 2, t: '変えようとしない', tags: ['view', 'psy'],
+      k: '講師は、相手を変えようとする力（フォース）は反発を生み、在り方で示す力（パワー）は自然な変化を促すと言います。心理学でも、押しつけない関わり（動機づけ面接）は、人が自分で動くのを助けるとされます。',
+      a: '誰かを変えたくなった場面で、まず自分が相手のためにできることを1つ決めて、やる。',
+      r: '相手は変わった？　自分の気持ちは？' },
+    { ph: 2, t: '緊張との付き合い方', tags: ['view', 'psy'],
+      k: '講師は、人前の緊張は「批判される」という解釈から来ると言います。実験でも、緊張を「ワクワク」と捉え直すと、成績が落ちにくいという結果があります。',
+      a: '今日、少し緊張する場面の前に「楽しみだ」と声に出す。',
+      r: 'いつもと違ったことは？' },
+    { ph: 2, t: '教えて完成させる', tags: ['view', 'psy'],
+      k: '講師は、知識は他者に伝えて自分のものになると言います。人に教えるつもりで学ぶと理解が深まることは、研究でも支持されています。',
+      a: 'この20日間の学びを1つ、3行で誰かに説明する（メモに書くだけでも可）。',
+      r: '説明してみて、あいまいだった所は？' },
+    { ph: 2, t: 'うまくいった場面', tags: ['psy'],
+      k: 'その日うまくいったことを書き出す習慣は、幸福感を高めるという研究があります。強みに注目すると、同じ行動を再現しやすくなります。',
+      a: '今週の会話で一番うまくいった場面を書く。何をしたからうまくいった？',
+      r: 'それを来週も使えそう？' },
+    { ph: 3, t: '学校は何だったか', tags: ['hist'],
+      k: '今の学校制度の原型には、19世紀プロイセンなどの国家主導の義務教育があり、産業化や国民づくりの目的もありました。ロックフェラー系財団が教育に資金を出した事実もあります。ただ、「財閥が従順な労働者を作るために設計した」という一つの意図で説明するのは、歴史学では議論が分かれます。',
+      a: '学校で身についたことと、失ったかもしれないことを、1つずつ書く。',
+      r: '今の自分の考え方に残っているものは？' },
+    { ph: 3, t: 'メディアの影響', tags: ['chk', 'psy'],
+      k: '「ポップスや映画が、自我を増やして家族を解体するために使われている」という主張に、計画的な意図だと示す確かな証拠は見当たりません。ただ、メディアが人の関心や価値観に影響することは、広く研究されています。',
+      a: '今日見た動画やSNSを1つ選び、「これは自分に何を感じさせようとしているか」を考える。',
+      r: '気づいたことは？' },
+    { ph: 3, t: '情報を疑う練習', tags: ['psy'],
+      k: '人は、自分の信じたい情報を集めやすい（確証バイアス）。これは誰にでも起きます。この動画群の主張も、同じように確かめる対象です。',
+      a: '気になった主張を1つ選び、「根拠は？　反対の見方は？」を調べて、2点書く。',
+      r: '調べて、考えは変わった？' },
+    { ph: 3, t: '不安をあおる情報', tags: ['chk'],
+      k: '「5Gでマイクロチップが埋め込まれる」「世界政府による管理」といった主張は、信頼できる証拠が見当たりません。「高層階病」は一部の調査はあるものの、原因が高さだとは確立していません。マイナンバーなどの制度への議論は現実にありますが、それとは別の話です。',
+      a: '不安になる情報を見たら、一度立ち止まり、出典と日付を確認する。',
+      r: '確認してみて、どうだった？' },
+    { ph: 3, t: '健康情報の線引き', tags: ['chk', 'psy'],
+      k: '砂糖の摂りすぎが健康に悪いことは確かです。一方、「ワクチンやフッ素は子どもに害」と一括りにする主張は、各国の公的機関の評価と食い違います。フッ素は適量なら虫歯予防に有効とされ、ワクチンの不安は医師に相談できます。',
+      a: '今日、砂糖入りの飲み物かお菓子を1つ減らす。健康の不安は、情報より先に医師や薬剤師に聞く。',
+      r: '減らして、気づいたことは？' },
+    { ph: 4, t: 'ライスワークとライフワーク', tags: ['view', 'psy'],
+      k: '講師は、日銭を稼ぐ仕事（ライスワーク）を超えて、能力を人のために使う一生の仕事（ライフワーク）へ移ることを勧めます。仕事に意味や貢献を感じられる人ほど、満足度が高い傾向があるとされます。',
+      a: '今の仕事や活動が、誰の役に立っているかを3つ書く。',
+      r: '一番うれしい役立ち方は？' },
+    { ph: 4, t: '他者中心への転換', tags: ['view', 'psy'],
+      k: '講師は、35歳ごろが自分中心から他者中心への転換点だと言います。年齢の数字に科学的根拠はありませんが、発達心理学では、中年期に次の世代や社会へ貢献する「世代性」が大切になるとされています。',
+      a: '自分の経験や強みのうち、人に渡せるものを3つ書く。',
+      r: '誰に渡せそう？' },
+    { ph: 4, t: 'ライフワーク仮説', tags: ['psy'],
+      k: '人生の目的がはっきりしている人は、幸福感や健康度が高い傾向があるという報告があります。正解を決めるのではなく、仮説として書いてみるのが出発点です。',
+      a: '「私は〇〇を通じて、△△な人の役に立つ」を1文で書く。',
+      r: '書いてみて、しっくり来る？　どこが違う？' },
+    { ph: 4, t: '続ける仕組み', tags: ['psy'],
+      k: '「いつ・どこで・何をするか」を先に決めておくと、実行しやすくなることが分かっています（実行意図）。',
+      a: '明日から続ける習慣を1つ選び、「〇時に、〇〇で、〇〇する」の形で書く。',
+      r: '30日で一番変わったことは？' }
   ];
 
-  var state = { done: {}, start: null };
-  var tab = 0;
-  var remoteDoc = null, synced = false, writing = false, dirty = false, writeTimer = null, loadTimer = null;
+  var state = { start: null, done: {}, notes: {} };
+  var sel = 1;
+  var storageOk = true;
+  var saveT = null;
 
   function $(id) { return document.getElementById(id); }
   function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
-  function tid(w, k, i) { return 'w' + w + '-' + k + '-' + i; }
   function pad(n) { return n < 10 ? '0' + n : '' + n; }
   function todayStr() { var d = new Date(); return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
   function dayNumber() {
     if (!state.start) return 0;
-    var s = new Date(state.start + 'T00:00:00'); var n = new Date(); n.setHours(0, 0, 0, 0);
+    var s = new Date(state.start + 'T00:00:00'), n = new Date(); n.setHours(0, 0, 0, 0);
     return Math.floor((n - s) / 86400000) + 1;
   }
-  function weekOfDay(n) { return n <= 7 ? 0 : n <= 14 ? 1 : n <= 21 ? 2 : 3; }
-  function weekCount(w) {
-    var t = 0, d = 0;
-    ORDER.forEach(function (k) { WEEKS[w].tasks[k].forEach(function (_, i) { t++; if (state.done[tid(w, k, i)]) d++; }); });
-    return { t: t, d: d };
-  }
-  function themeCount(w, k) {
-    var d = 0; WEEKS[w].tasks[k].forEach(function (_, i) { if (state.done[tid(w, k, i)]) d++; });
-    return d + '/' + WEEKS[w].tasks[k].length;
-  }
+  function todayNum() { var n = dayNumber(); return state.start && n >= 1 && n <= 30 ? n : 0; }
+  function dayCount(d) { var n = 0; STEPS.forEach(function (s) { if (state.done[d + s.id]) n++; }); return n; }
 
-  function loadLocal() {
+  function load() {
     try {
-      var raw = localStorage.getItem(KEY);
-      if (raw) { var o = JSON.parse(raw); if (o && typeof o.done === 'object' && o.done) { state.done = o.done; state.start = o.start || null; } }
-    } catch (e) {}
-  }
-  function saveLocal() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
-  function setNote(t) { $('note').textContent = t; }
-
-  function changed() { saveLocal(); queueWrite(); }
-  function queueWrite() {
-    if (!remoteDoc) return;
-    dirty = true; clearTimeout(writeTimer); writeTimer = setTimeout(flush, 500);
-  }
-  function flush() {
-    if (writing || !dirty || !remoteDoc) return;
-    writing = true; dirty = false;
-    remoteDoc.set({ done: state.done, start: state.start, updated: Date.now() }).then(function () {
-      setNote('保存済み（他の端末とも同期します）');
-    }).catch(function () {
-      setNote('この端末に保存しました（同期はできませんでした）');
-    }).then(function () { writing = false; if (dirty) flush(); });
-  }
-  function sameDone(a, b) {
-    var ka = Object.keys(a), kb = Object.keys(b);
-    if (ka.length !== kb.length) return false;
-    for (var i = 0; i < ka.length; i++) if (!b[ka[i]]) return false;
-    return true;
-  }
-  function applyRemote(d) {
-    var rd = (d && d.done && typeof d.done === 'object') ? d.done : {};
-    var rs = d && d.start ? d.start : null;
-    if (!synced) {
-      synced = true;
-      var merged = {}, k;
-      for (k in rd) if (rd[k]) merged[k] = true;
-      for (k in state.done) if (state.done[k]) merged[k] = true;
-      var start = rs || state.start;
-      var diff = !sameDone(merged, rd) || start !== rs;
-      state.done = merged; state.start = start;
-      saveLocal(); refreshAll();
-      if (diff) queueWrite(); else setNote('保存済み（他の端末とも同期します）');
-    } else if (!dirty && !writing) {
-      if (!sameDone(rd, state.done) || rs !== state.start) {
-        state.done = rd; state.start = rs; saveLocal(); refreshAll();
+      var o = JSON.parse(localStorage.getItem(KEY) || 'null');
+      if (o && typeof o === 'object') {
+        state.start = o.start || null;
+        state.done = o.done && typeof o.done === 'object' ? o.done : {};
+        state.notes = o.notes && typeof o.notes === 'object' ? o.notes : {};
       }
-    }
+    } catch (e) { storageOk = false; }
   }
-  function onSnap(snap) {
-    clearTimeout(loadTimer);
-    if (snap.metadata && snap.metadata.hasPendingWrites) return;
-    if (snap.exists) { applyRemote(snap.data()); }
-    else if (!snap.metadata.fromCache && !synced) {
-      synced = true;
-      if (Object.keys(state.done).length || state.start) queueWrite(); else setNote('保存済み（他の端末とも同期します）');
-    }
+  function saveNow() {
+    clearTimeout(saveT);
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { storageOk = false; $('fnote').textContent = 'この環境では保存できません。ブラウザの設定を確認してください。'; }
   }
-  function onErr() { clearTimeout(loadTimer); remoteDoc = null; setNote('この端末に保存します'); }
-  async function initRemote() {
-    try {
-      if (!window.claude || !window.claude.use) return;
-      var user = await window.claude.use('user');
-      var db = await window.claude.use('db');
-      if (!user || !db) return;
-      var uid = await user.id();
-      if (!uid) return;
-      remoteDoc = db.doc('data/users/' + uid + '/progress');
-      setNote('同期中…');
-      loadTimer = setTimeout(function () { setNote('同期できていません。この端末には保存されています'); }, 10000);
-      remoteDoc.onSnapshot(onSnap, onErr);
-    } catch (e) { remoteDoc = null; }
-  }
+  function save() { clearTimeout(saveT); saveT = setTimeout(saveNow, 250); }
 
-  function buildTabs() {
-    var row = $('tabrow'); row.textContent = '';
-    WEEKS.forEach(function (w, i) {
-      var b = el('button', 'tab'); b.type = 'button'; b.setAttribute('role', 'tab'); b.dataset.w = i;
-      b.appendChild(el('span', 'tn', w.name)); var c = el('span', 'tc', ''); c.dataset.c = i; b.appendChild(c);
-      var n = el('span', 'now'); n.hidden = true; n.dataset.n = i; n.setAttribute('aria-hidden', 'true'); b.appendChild(n);
-      b.addEventListener('click', function () { tab = i; renderTasks(); refreshStats(); window.scrollTo({ top: 0 }); });
-      row.appendChild(b);
-    });
+  function buildStrip() {
+    var s = $('strip'); s.textContent = '';
+    for (var d = 1; d <= 30; d++) {
+      (function (d) {
+        var b = el('button', 'chip'); b.type = 'button'; b.dataset.d = d;
+        b.appendChild(el('span', null, String(d)));
+        var dot = el('span', 'todaydot'); dot.hidden = true; dot.setAttribute('aria-hidden', 'true'); b.appendChild(dot);
+        b.addEventListener('click', function () { selectDay(d, false); });
+        s.appendChild(b);
+      })(d);
+    }
   }
-  function renderTasks() {
-    var w = tab, list = $('list'); list.textContent = '';
-    var head = el('div', 'weekhead');
-    head.appendChild(el('h2', null, '第' + (w + 1) + '週　' + WEEKS[w].lead));
-    head.appendChild(el('p', null, WEEKS[w].range)); list.appendChild(head);
-    ORDER.forEach(function (k) {
-      var sec = el('section', 'theme t-' + k);
-      var h = el('h3', 'th'); h.appendChild(el('span', 'dot')); h.appendChild(el('span', 'tt', THEMES[k]));
-      var cnt = el('span', 'tcount', themeCount(w, k)); cnt.dataset.k = k; h.appendChild(cnt); sec.appendChild(h);
-      var ul = el('ul');
-      WEEKS[w].tasks[k].forEach(function (text, i) {
-        var id = tid(w, k, i), li = el('li'), lab = el('label', 'task');
-        var inp = el('input'); inp.type = 'checkbox'; inp.id = id; inp.checked = !!state.done[id];
-        inp.addEventListener('change', function () {
-          if (inp.checked) state.done[id] = true; else delete state.done[id];
-          refreshStats(); changed();
-        });
-        lab.appendChild(inp); lab.appendChild(el('span', 'box')); lab.appendChild(el('span', 'txt', text));
-        li.appendChild(lab); ul.appendChild(li);
-      });
-      sec.appendChild(ul); list.appendChild(sec);
+  function updateStrip() {
+    var today = todayNum();
+    document.querySelectorAll('.chip').forEach(function (b) {
+      var d = +b.dataset.d, c = dayCount(d);
+      b.className = 'chip' + (c === 3 ? ' full' : c > 0 ? ' part' : '');
+      b.setAttribute('aria-selected', d === sel ? 'true' : 'false');
+      b.setAttribute('aria-label', 'Day ' + d + '　' + c + '/3' + (d === today ? '　今日' : ''));
+      b.querySelector('.todaydot').hidden = d !== today;
     });
+    var s = $('strip'), cur = s.children[sel - 1];
+    if (cur) s.scrollLeft = cur.offsetLeft - (s.clientWidth - cur.offsetWidth) / 2;
   }
-  function refreshStats() {
-    var total = 0, done = 0;
-    for (var w = 0; w < WEEKS.length; w++) { var c = weekCount(w); total += c.t; done += c.d; }
-    var pct = total ? Math.round(done / total * 100) : 0;
-    $('pct').textContent = pct; $('done').textContent = done; $('total').textContent = total;
-    $('barfill').style.width = pct + '%'; $('bar').setAttribute('aria-valuenow', pct);
-    var n = dayNumber(), started = !!state.start;
-    $('startbtn').hidden = started;
-    $('day').textContent = !started ? '' : (done === total ? '30日、完走です' : n > 30 ? '30日が経過しました' : 'Day ' + Math.max(1, n) + ' / 30');
-    var cw = started && n >= 1 ? weekOfDay(n) : -1;
-    document.querySelectorAll('.tab').forEach(function (b) {
-      var i = +b.dataset.w, c = weekCount(i);
-      b.querySelector('.tc').textContent = c.d + '/' + c.t;
-      b.setAttribute('aria-selected', i === tab ? 'true' : 'false');
-      b.querySelector('.now').hidden = i !== cw;
-      b.setAttribute('aria-label', WEEKS[i].name + '　' + c.d + '/' + c.t + (i === cw ? '　今週' : ''));
-    });
-    document.querySelectorAll('.tcount').forEach(function (s) { s.textContent = themeCount(tab, s.dataset.k); });
-  }
-  function refreshAll() { renderTasks(); refreshStats(); }
-  function initialTab() {
+  function updateSummary() {
+    var steps = 0, days = 0;
+    for (var d = 1; d <= 30; d++) { var c = dayCount(d); steps += c; if (c === 3) days++; }
+    var pct = Math.round(steps / 90 * 100);
+    $('pct').textContent = pct; $('days').textContent = days;
+    $('fill').style.width = pct + '%'; $('bar').setAttribute('aria-valuenow', pct);
+    $('startbtn').hidden = !!state.start;
     var n = dayNumber();
-    if (state.start && n >= 1) return weekOfDay(Math.min(n, 30));
-    for (var w = 0; w < WEEKS.length; w++) { var c = weekCount(w); if (c.d < c.t) return w; }
-    return 0;
+    $('today').textContent = !state.start ? '未スタート' : days === 30 ? '30日、完走です' : n > 30 ? '30日が経過しました' : '今日は Day ' + Math.max(1, n);
+  }
+  function renderNotes() {
+    var box = $('notes'); box.textContent = ''; var any = false;
+    for (var d = 30; d >= 1; d--) {
+      if (!state.notes[d]) continue;
+      any = true;
+      (function (d) {
+        var b = el('button', 'note'); b.type = 'button';
+        b.appendChild(el('div', 'nh', 'Day ' + d + '　' + DAYS[d - 1].t));
+        b.appendChild(el('div', 'nt', state.notes[d]));
+        b.addEventListener('click', function () { selectDay(d, true); });
+        box.appendChild(b);
+      })(d);
+    }
+    if (!any) box.appendChild(el('p', 'empty', 'まだありません。内省に書いたことが、ここに並びます。'));
+  }
+  function stepCard(d, step, body) {
+    var card = el('section', 'step');
+    var h = el('div', 'sh'); h.appendChild(el('b', null, step.name)); h.appendChild(el('span', null, step.min + '分')); card.appendChild(h);
+    var sb = el('div', 'sb'); sb.appendChild(body); card.appendChild(sb);
+    var btn = el('button', 'done', step.verb); btn.type = 'button'; btn.id = 'done-' + step.id;
+    btn.setAttribute('aria-pressed', state.done[d + step.id] ? 'true' : 'false');
+    btn.addEventListener('click', function () {
+      var k = d + step.id;
+      if (state.done[k]) delete state.done[k]; else state.done[k] = 1;
+      btn.setAttribute('aria-pressed', state.done[k] ? 'true' : 'false');
+      afterChange(d);
+    });
+    card.appendChild(btn);
+    return card;
+  }
+  function afterChange(d) {
+    save(); updateStrip(); updateSummary();
+    var st = $('daystate'); if (st) st.hidden = dayCount(d) !== 3;
+    var nx = $('nextbtn'); if (nx) nx.className = 'navbtn' + (dayCount(d) === 3 ? ' primary' : '');
+  }
+  function renderDay() {
+    var d = sel, D = DAYS[d - 1], ph = PH[D.ph], root = $('day');
+    root.textContent = '';
+    var head = el('div', 'dayhead');
+    head.appendChild(el('p', 'phase', ph.n + '　' + ph.t));
+    head.appendChild(el('h2', null, 'Day ' + d + '　' + D.t));
+    var st = el('p', 'state', 'この日は完了です'); st.id = 'daystate'; st.hidden = dayCount(d) !== 3; head.appendChild(st);
+    root.appendChild(head);
+
+    var kb = el('div'); var tg = el('div', 'tags');
+    D.tags.forEach(function (t) { tg.appendChild(el('span', 'tag t-' + TAGS[t].c, TAGS[t].n)); });
+    kb.appendChild(tg); kb.appendChild(el('p', null, D.k));
+    root.appendChild(stepCard(d, STEPS[0], kb));
+    root.appendChild(stepCard(d, STEPS[1], el('p', null, D.a)));
+
+    var rb = el('div'); rb.appendChild(el('p', 'ask', D.r));
+    var ta = el('textarea'); ta.id = 'note-' + d; ta.rows = 4; ta.setAttribute('aria-label', '内省メモ');
+    ta.value = state.notes[d] || '';
+    ta.addEventListener('input', function () {
+      var was = !!state.notes[d], v = ta.value;
+      if (v.trim()) state.notes[d] = v; else delete state.notes[d];
+      if (!was && state.notes[d] && !state.done[d + 'r']) {
+        state.done[d + 'r'] = 1;
+        var b = $('done-r'); if (b) b.setAttribute('aria-pressed', 'true');
+      }
+      afterChange(d); renderNotes();
+    });
+    rb.appendChild(ta);
+    root.appendChild(stepCard(d, STEPS[2], rb));
+
+    var nav = el('div', 'nav');
+    var pv = el('button', 'navbtn', '前の日'); pv.type = 'button'; pv.disabled = d <= 1;
+    pv.addEventListener('click', function () { selectDay(d - 1, true); });
+    var nx = el('button', 'navbtn' + (dayCount(d) === 3 ? ' primary' : ''), '次の日'); nx.type = 'button'; nx.id = 'nextbtn'; nx.disabled = d >= 30;
+    nx.addEventListener('click', function () { selectDay(d + 1, true); });
+    nav.appendChild(pv); nav.appendChild(nx); root.appendChild(nav);
+  }
+  function selectDay(d, toTop) {
+    sel = Math.min(30, Math.max(1, d));
+    renderDay(); updateStrip();
+    if (toTop) window.scrollTo({ top: 0 });
+  }
+  function initialDay() {
+    var t = todayNum(); if (t) return t;
+    for (var d = 1; d <= 30; d++) if (dayCount(d) < 3) return d;
+    return 30;
   }
 
   $('startbtn').addEventListener('click', function () {
-    state.start = todayStr(); tab = 0; changed(); refreshAll();
+    state.start = todayStr(); saveNow(); updateSummary(); selectDay(1, true);
   });
   $('resetbtn').addEventListener('click', function () { $('resetbtn').hidden = true; $('resetconfirm').hidden = false; });
   $('resetno').addEventListener('click', function () { $('resetconfirm').hidden = true; $('resetbtn').hidden = false; });
   $('resetyes').addEventListener('click', function () {
-    state.done = {}; state.start = null; tab = 0; $('resetconfirm').hidden = true; $('resetbtn').hidden = false;
-    changed(); refreshAll();
+    state.start = null; state.done = {}; state.notes = {};
+    $('resetconfirm').hidden = true; $('resetbtn').hidden = false;
+    saveNow(); updateSummary(); renderNotes(); selectDay(1, true);
   });
+  window.addEventListener('pagehide', saveNow);
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') saveNow(); });
 
-  loadLocal(); tab = initialTab(); buildTabs(); refreshAll(); initRemote();
+  load(); buildStrip(); sel = initialDay(); updateSummary(); renderNotes(); selectDay(sel, false);
+  if (!storageOk) $('fnote').textContent = 'この環境では保存できません。ブラウザの設定を確認してください。';
 })();
-</script>
-<script>
 if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js').catch(function () {}); }
 </script>
 </body>
