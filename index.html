@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#F2F4F8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="人間力30日">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>人間力30日計画</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
+<style>
+/* layout: phone-first checklist. hero progress card, sticky week tabs, one card per theme with big tap rows */
+:root {
+  --bg: #F2F4F8; --surface: #FFFFFF; --fg: #18202F; --muted: #586277; --line: #DCE1EA;
+  --accent: #2D4AA8; --on-accent: #FFFFFF; --track: #DDE3EE; --now: #D98A00; --on-c: #FFFFFF;
+  --c-inner: #5A48B8; --t-inner: #EEEBFA; --x-inner: #382C86;
+  --c-comm: #0E8575; --t-comm: #E4F4F1; --x-comm: #0A5A50;
+  --c-life: #B06F00; --t-life: #FBF0DC; --x-life: #6E4500;
+  --c-body: #C4452A; --t-body: #FBEAE5; --x-body: #7F2A18;
+  --font: "Zen Kaku Gothic New", "Hiragino Kaku Gothic ProN", "Noto Sans JP", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0E121A; --surface: #161B26; --fg: #E7EBF3; --muted: #98A2B6; --line: #262E3D;
+    --accent: #8FA5F5; --on-accent: #0E121A; --track: #262E3D; --now: #F0B03A; --on-c: #0E121A;
+    --c-inner: #A398F3; --t-inner: #211E3B; --x-inner: #CEC8F9;
+    --c-comm: #4FC4B2; --t-comm: #12302C; --x-comm: #A5E6DB;
+    --c-life: #E3A93C; --t-life: #33270F; --x-life: #F3D699;
+    --c-body: #EE8468; --t-body: #37201A; --x-body: #F8C4B6;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0E121A; --surface: #161B26; --fg: #E7EBF3; --muted: #98A2B6; --line: #262E3D;
+  --accent: #8FA5F5; --on-accent: #0E121A; --track: #262E3D; --now: #F0B03A; --on-c: #0E121A;
+  --c-inner: #A398F3; --t-inner: #211E3B; --x-inner: #CEC8F9;
+  --c-comm: #4FC4B2; --t-comm: #12302C; --x-comm: #A5E6DB;
+  --c-life: #E3A93C; --t-life: #33270F; --x-life: #F3D699;
+  --c-body: #EE8468; --t-body: #37201A; --x-body: #F8C4B6;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 16px; line-height: 1.6; padding-bottom: 56px; -webkit-text-size-adjust: 100%; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); background: var(--bg); z-index: 20; }
+.inner { max-width: 560px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+button { font: inherit; color: inherit; cursor: pointer; }
+button:focus-visible, input:focus-visible + .box { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+.hero { padding-block: 20px 16px; }
+.hero h1 { margin: 0; font-size: 20px; font-weight: 700; letter-spacing: 0.02em; text-wrap: balance; }
+.hero .sub { margin: 2px 0 14px; color: var(--muted); font-size: 14px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 18px; }
+.stat { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
+.pct { font-size: 48px; line-height: 1; font-weight: 700; font-variant-numeric: tabular-nums; }
+.pct small { font-size: 20px; font-weight: 500; margin-left: 2px; }
+.stat-r { text-align: right; font-size: 14px; color: var(--muted); font-variant-numeric: tabular-nums; min-width: 0; }
+.stat-r b { color: var(--fg); font-weight: 700; }
+.bar { height: 10px; background: var(--track); border-radius: 999px; overflow: hidden; margin-top: 14px; }
+.bar > i { display: block; height: 100%; width: 0; background: var(--accent); border-radius: 999px; transition: width .3s ease; }
+.startbtn { margin-top: 14px; width: 100%; min-height: 48px; border: 0; border-radius: 12px; background: var(--accent); color: var(--on-accent); font-weight: 700; font-size: 16px; }
+.startbtn:active { transform: scale(.98); }
+
+.tabs { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); border-bottom: 1px solid var(--line); padding-block: 8px; }
+.tabrow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.tab { position: relative; min-height: 52px; border: 1px solid var(--line); background: var(--surface); border-radius: 12px; padding: 6px 2px; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.25; }
+.tab .tn { font-size: 14px; font-weight: 700; }
+.tab .tc { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.tab[aria-selected="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.tab[aria-selected="true"] .tc { color: var(--on-accent); opacity: .85; }
+.tab .now { position: absolute; top: 5px; right: 6px; width: 7px; height: 7px; border-radius: 50%; background: var(--now); }
+
+.weekhead { padding-block: 18px 6px; }
+.weekhead h2 { margin: 0; font-size: 18px; font-weight: 700; text-wrap: balance; }
+.weekhead p { margin: 2px 0 0; font-size: 14px; color: var(--muted); }
+.theme { margin-top: 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+.theme.t-inner { --c: var(--c-inner); --t: var(--t-inner); --x: var(--x-inner); }
+.theme.t-comm { --c: var(--c-comm); --t: var(--t-comm); --x: var(--x-comm); }
+.theme.t-life { --c: var(--c-life); --t: var(--t-life); --x: var(--x-life); }
+.theme.t-body { --c: var(--c-body); --t: var(--t-body); --x: var(--x-body); }
+.th { margin: 0; display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: var(--t); color: var(--x); font-size: 14px; font-weight: 700; }
+.th .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--c); flex: none; }
+.th .tt { flex: 1; min-width: 0; }
+.th .tcount { font-variant-numeric: tabular-nums; font-weight: 500; }
+.theme ul { list-style: none; margin: 0; padding: 0; }
+.theme li + li { border-top: 1px solid var(--line); }
+.task { display: flex; gap: 14px; align-items: flex-start; padding: 14px; min-height: 56px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.task input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.box { flex: none; width: 26px; height: 26px; margin-top: 1px; border-radius: 8px; border: 2px solid var(--muted); display: grid; place-items: center; transition: background .15s, border-color .15s; }
+.box::after { content: ""; width: 12px; height: 7px; border-left: 3px solid var(--on-c); border-bottom: 3px solid var(--on-c); transform: rotate(-45deg) translate(1px, -1px) scale(0); transition: transform .15s; }
+.task input:checked + .box { background: var(--c); border-color: var(--c); }
+.task input:checked + .box::after { transform: rotate(-45deg) translate(1px, -1px) scale(1); }
+.txt { min-width: 0; overflow-wrap: anywhere; font-size: 16px; }
+.task input:checked ~ .txt { color: var(--muted); text-decoration: line-through; text-decoration-thickness: 1px; }
+
+.foot { margin-top: 28px; display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
+.note { margin: 0; font-size: 13px; color: var(--muted); }
+.ghost { min-height: 44px; padding: 0 16px; border: 1px solid var(--line); background: transparent; border-radius: 10px; font-size: 14px; color: var(--muted); }
+.confirm { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; font-size: 14px; }
+.danger { min-height: 44px; padding: 0 16px; border: 0; border-radius: 10px; background: var(--c-body); color: var(--on-c); font-weight: 700; font-size: 14px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<header class="hero">
+  <div class="inner">
+    <h1>人間力トータルアップ</h1>
+    <p class="sub">30日行動計画</p>
+    <div class="card">
+      <div class="stat">
+        <div class="pct" aria-live="polite"><span id="pct">0</span><small>%</small></div>
+        <div class="stat-r"><div><b id="done">0</b> / <span id="total">40</span> 完了</div><div id="day"></div></div>
+      </div>
+      <div class="bar" role="progressbar" aria-label="全体の進捗" aria-valuemin="0" aria-valuemax="100" id="bar"><i id="barfill"></i></div>
+      <button class="startbtn" id="startbtn" type="button">今日からスタートする</button>
+    </div>
+  </div>
+</header>
+
+<nav class="tabs" aria-label="週の切り替え">
+  <div class="inner"><div class="tabrow" id="tabrow" role="tablist"></div></div>
+</nav>
+
+<main class="inner">
+  <div id="list"></div>
+  <div class="foot">
+    <p class="note" id="note">この端末に保存します</p>
+    <button class="ghost" id="resetbtn" type="button">最初からやり直す</button>
+    <div class="confirm" id="resetconfirm" hidden>
+      <span>チェックをすべて消します。</span>
+      <button class="danger" id="resetyes" type="button">リセットする</button>
+      <button class="ghost" id="resetno" type="button">やめる</button>
+    </div>
+  </div>
+</main>
+
+<script>
+(function () {
+  'use strict';
+  var KEY = 'ningenryoku30:v1';
+  var ORDER = ['inner', 'comm', 'life', 'body'];
+  var THEMES = { inner: '自我・本質の理解', comm: '人間関係・コミュニケーション', life: 'ライフワーク・使命の発見', body: '身体・環境・睡眠の最適化' };
+  var WEEKS = [
+    { name: '1週目', range: 'Day 1〜7', lead: '自己を観察する目を育てる', tasks: {
+      inner: ['毎朝5分「今の感情・思考を紙に書き出す」習慣を開始する', '自分が反射的に怒る・怖れる場面を1つメモし、「これはエゴの反応か？」と問いかける', '夜、親との記憶で未完了の感情がないかノートに書き出す（完了させなくてよい）'],
+      comm: ['1日1回、会話で自分の頭を空にして相手の話を「評価なし」で聞く練習をする', '「あの人は自分を攻撃している」と感じた瞬間を記録し、「本当にそうか？」と一度立ち止まる'],
+      life: ['「子供の頃に夢中になったこと」を10個書き出す', '今の仕事の中で「お金なしでもやりたい」と思う要素があるか探してみる'],
+      body: ['就寝1時間前にスマホ・LEDを落とし、暗い間接照明に切り替える', '砂糖・加工食品を1日1つ削減してみる。何を食べたか記録する', '毎晩寝る前に「今日の出来事を中立的に振り返る自省（Jisei）」を3分行う'] } },
+    { name: '2週目', range: 'Day 8〜14', lead: '行動パターンを書き換える', tasks: {
+      inner: ['自動反応してしまった場面を振り返り、「本質から選ぶとどう行動したか？」を書く', '「勝ちたい・支配したい」衝動を感じた場面をキャッチし、ノートに記録する', '感情が揺れた後、5分間だけ「感情の主人」として観察者に戻る練習をする'],
+      comm: ['親・パートナー・友人に「最近どう？」と聞き、アドバイスせずに5分聴き切る', 'フォース（強制）を使いそうな場面で意識的に止まり、パワー（在り方）で関わる実験をする'],
+      life: ['「自分の能力で他者の役に立てること」を3つ書き、それを仕事にしている人を調べる', 'ライスワークとライフワークのバランスを現在何対何か評価し、理想の状態を描く'],
+      body: ['毎日同じ時間に就寝・起床する（±30分以内）リズムをつくる', '寝る前に「今夜、夢の中でも意識を保とう」と意図を設定する（明晰夢の入口）', 'スマホを寝室の外に置いて眠る'] } },
+    { name: '3週目', range: 'Day 15〜21', lead: '関係性と使命を深める', tasks: {
+      inner: ['親へのわだかまりが残っている感情を紙に書き出し、手紙の形で「感謝を見つける」練習をする', '「無条件に人を受け入れる」感覚を、小さな場面（店員・同僚など）で実践する', '朝10分、静かな時間を設けて「今ここ」に意識を戻す訓練をする'],
+      comm: ['1週間で1人、「この人の奥にある本当の願いは何か？」を意識して対話する', '自分が学んだ知識を誰かに分かりやすく話して教える（アウトプットによる定着）'],
+      life: ['「社会のどんな問題を解決したいか？」を3つ書き、最も心が動くものを選ぶ', 'ライフワーク仮説を1文で書く：「私は〇〇を通じて△△な人の役に立つ」'],
+      body: ['裸足で地面に触れる「アーシング」を1日10分実践する', '朝日を浴びながら5分外に出る習慣をつくる', '夢を見たらすぐメモする「夢日記」を開始する'] } },
+    { name: '4週目', range: 'Day 22〜30', lead: '統合と宣言', tasks: {
+      inner: ['30日間のノートを読み返し、「自我の反応パターン」を3つ言語化する', '「本質から生きた」と感じた瞬間トップ3を書き、共通するものを見つける', '親への感謝を声に出す・手紙を送る・心の中で完了させる儀式を行う'],
+      comm: ['大切な人に「あなたのここが好き・ありがとう」を直接伝える場をつくる', '過去1ヶ月で関係が変化した人間関係を振り返り、何が変わったかを記録する'],
+      life: ['ライフワーク宣言を完成させ、信頼できる人に話す', '次の90日で「ライフワークに向けた最初の一歩」を1つ決め、日程を入れる'],
+      body: ['30日間の身体・睡眠の変化を振り返り、最も効果があった習慣を3つ選ぶ', '31日目以降も続ける「マイ習慣リスト」を作成する', '自省（Jisei）を毎晩の「1日の完了儀式」として習慣化する'] } }
+  ];
+
+  var state = { done: {}, start: null };
+  var tab = 0;
+  var remoteDoc = null, synced = false, writing = false, dirty = false, writeTimer = null, loadTimer = null;
+
+  function $(id) { return document.getElementById(id); }
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+  function tid(w, k, i) { return 'w' + w + '-' + k + '-' + i; }
+  function pad(n) { return n < 10 ? '0' + n : '' + n; }
+  function todayStr() { var d = new Date(); return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+  function dayNumber() {
+    if (!state.start) return 0;
+    var s = new Date(state.start + 'T00:00:00'); var n = new Date(); n.setHours(0, 0, 0, 0);
+    return Math.floor((n - s) / 86400000) + 1;
+  }
+  function weekOfDay(n) { return n <= 7 ? 0 : n <= 14 ? 1 : n <= 21 ? 2 : 3; }
+  function weekCount(w) {
+    var t = 0, d = 0;
+    ORDER.forEach(function (k) { WEEKS[w].tasks[k].forEach(function (_, i) { t++; if (state.done[tid(w, k, i)]) d++; }); });
+    return { t: t, d: d };
+  }
+  function themeCount(w, k) {
+    var d = 0; WEEKS[w].tasks[k].forEach(function (_, i) { if (state.done[tid(w, k, i)]) d++; });
+    return d + '/' + WEEKS[w].tasks[k].length;
+  }
+
+  function loadLocal() {
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (raw) { var o = JSON.parse(raw); if (o && typeof o.done === 'object' && o.done) { state.done = o.done; state.start = o.start || null; } }
+    } catch (e) {}
+  }
+  function saveLocal() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+  function setNote(t) { $('note').textContent = t; }
+
+  function changed() { saveLocal(); queueWrite(); }
+  function queueWrite() {
+    if (!remoteDoc) return;
+    dirty = true; clearTimeout(writeTimer); writeTimer = setTimeout(flush, 500);
+  }
+  function flush() {
+    if (writing || !dirty || !remoteDoc) return;
+    writing = true; dirty = false;
+    remoteDoc.set({ done: state.done, start: state.start, updated: Date.now() }).then(function () {
+      setNote('保存済み（他の端末とも同期します）');
+    }).catch(function () {
+      setNote('この端末に保存しました（同期はできませんでした）');
+    }).then(function () { writing = false; if (dirty) flush(); });
+  }
+  function sameDone(a, b) {
+    var ka = Object.keys(a), kb = Object.keys(b);
+    if (ka.length !== kb.length) return false;
+    for (var i = 0; i < ka.length; i++) if (!b[ka[i]]) return false;
+    return true;
+  }
+  function applyRemote(d) {
+    var rd = (d && d.done && typeof d.done === 'object') ? d.done : {};
+    var rs = d && d.start ? d.start : null;
+    if (!synced) {
+      synced = true;
+      var merged = {}, k;
+      for (k in rd) if (rd[k]) merged[k] = true;
+      for (k in state.done) if (state.done[k]) merged[k] = true;
+      var start = rs || state.start;
+      var diff = !sameDone(merged, rd) || start !== rs;
+      state.done = merged; state.start = start;
+      saveLocal(); refreshAll();
+      if (diff) queueWrite(); else setNote('保存済み（他の端末とも同期します）');
+    } else if (!dirty && !writing) {
+      if (!sameDone(rd, state.done) || rs !== state.start) {
+        state.done = rd; state.start = rs; saveLocal(); refreshAll();
+      }
+    }
+  }
+  function onSnap(snap) {
+    clearTimeout(loadTimer);
+    if (snap.metadata && snap.metadata.hasPendingWrites) return;
+    if (snap.exists) { applyRemote(snap.data()); }
+    else if (!snap.metadata.fromCache && !synced) {
+      synced = true;
+      if (Object.keys(state.done).length || state.start) queueWrite(); else setNote('保存済み（他の端末とも同期します）');
+    }
+  }
+  function onErr() { clearTimeout(loadTimer); remoteDoc = null; setNote('この端末に保存します'); }
+  async function initRemote() {
+    try {
+      if (!window.claude || !window.claude.use) return;
+      var user = await window.claude.use('user');
+      var db = await window.claude.use('db');
+      if (!user || !db) return;
+      var uid = await user.id();
+      if (!uid) return;
+      remoteDoc = db.doc('data/users/' + uid + '/progress');
+      setNote('同期中…');
+      loadTimer = setTimeout(function () { setNote('同期できていません。この端末には保存されています'); }, 10000);
+      remoteDoc.onSnapshot(onSnap, onErr);
+    } catch (e) { remoteDoc = null; }
+  }
+
+  function buildTabs() {
+    var row = $('tabrow'); row.textContent = '';
+    WEEKS.forEach(function (w, i) {
+      var b = el('button', 'tab'); b.type = 'button'; b.setAttribute('role', 'tab'); b.dataset.w = i;
+      b.appendChild(el('span', 'tn', w.name)); var c = el('span', 'tc', ''); c.dataset.c = i; b.appendChild(c);
+      var n = el('span', 'now'); n.hidden = true; n.dataset.n = i; n.setAttribute('aria-hidden', 'true'); b.appendChild(n);
+      b.addEventListener('click', function () { tab = i; renderTasks(); refreshStats(); window.scrollTo({ top: 0 }); });
+      row.appendChild(b);
+    });
+  }
+  function renderTasks() {
+    var w = tab, list = $('list'); list.textContent = '';
+    var head = el('div', 'weekhead');
+    head.appendChild(el('h2', null, '第' + (w + 1) + '週　' + WEEKS[w].lead));
+    head.appendChild(el('p', null, WEEKS[w].range)); list.appendChild(head);
+    ORDER.forEach(function (k) {
+      var sec = el('section', 'theme t-' + k);
+      var h = el('h3', 'th'); h.appendChild(el('span', 'dot')); h.appendChild(el('span', 'tt', THEMES[k]));
+      var cnt = el('span', 'tcount', themeCount(w, k)); cnt.dataset.k = k; h.appendChild(cnt); sec.appendChild(h);
+      var ul = el('ul');
+      WEEKS[w].tasks[k].forEach(function (text, i) {
+        var id = tid(w, k, i), li = el('li'), lab = el('label', 'task');
+        var inp = el('input'); inp.type = 'checkbox'; inp.id = id; inp.checked = !!state.done[id];
+        inp.addEventListener('change', function () {
+          if (inp.checked) state.done[id] = true; else delete state.done[id];
+          refreshStats(); changed();
+        });
+        lab.appendChild(inp); lab.appendChild(el('span', 'box')); lab.appendChild(el('span', 'txt', text));
+        li.appendChild(lab); ul.appendChild(li);
+      });
+      sec.appendChild(ul); list.appendChild(sec);
+    });
+  }
+  function refreshStats() {
+    var total = 0, done = 0;
+    for (var w = 0; w < WEEKS.length; w++) { var c = weekCount(w); total += c.t; done += c.d; }
+    var pct = total ? Math.round(done / total * 100) : 0;
+    $('pct').textContent = pct; $('done').textContent = done; $('total').textContent = total;
+    $('barfill').style.width = pct + '%'; $('bar').setAttribute('aria-valuenow', pct);
+    var n = dayNumber(), started = !!state.start;
+    $('startbtn').hidden = started;
+    $('day').textContent = !started ? '' : (done === total ? '30日、完走です' : n > 30 ? '30日が経過しました' : 'Day ' + Math.max(1, n) + ' / 30');
+    var cw = started && n >= 1 ? weekOfDay(n) : -1;
+    document.querySelectorAll('.tab').forEach(function (b) {
+      var i = +b.dataset.w, c = weekCount(i);
+      b.querySelector('.tc').textContent = c.d + '/' + c.t;
+      b.setAttribute('aria-selected', i === tab ? 'true' : 'false');
+      b.querySelector('.now').hidden = i !== cw;
+      b.setAttribute('aria-label', WEEKS[i].name + '　' + c.d + '/' + c.t + (i === cw ? '　今週' : ''));
+    });
+    document.querySelectorAll('.tcount').forEach(function (s) { s.textContent = themeCount(tab, s.dataset.k); });
+  }
+  function refreshAll() { renderTasks(); refreshStats(); }
+  function initialTab() {
+    var n = dayNumber();
+    if (state.start && n >= 1) return weekOfDay(Math.min(n, 30));
+    for (var w = 0; w < WEEKS.length; w++) { var c = weekCount(w); if (c.d < c.t) return w; }
+    return 0;
+  }
+
+  $('startbtn').addEventListener('click', function () {
+    state.start = todayStr(); tab = 0; changed(); refreshAll();
+  });
+  $('resetbtn').addEventListener('click', function () { $('resetbtn').hidden = true; $('resetconfirm').hidden = false; });
+  $('resetno').addEventListener('click', function () { $('resetconfirm').hidden = true; $('resetbtn').hidden = false; });
+  $('resetyes').addEventListener('click', function () {
+    state.done = {}; state.start = null; tab = 0; $('resetconfirm').hidden = true; $('resetbtn').hidden = false;
+    changed(); refreshAll();
+  });
+
+  loadLocal(); tab = initialTab(); buildTabs(); refreshAll(); initRemote();
+})();
+</script>
+<script>
+if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js').catch(function () {}); }
+</script>
+</body>
+</html>
