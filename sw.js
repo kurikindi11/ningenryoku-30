@@ -1,4 +1,4 @@
-var CACHE = 'ningenryoku30-v3';
+var CACHE = 'ningenryoku30-v4';
 var FILES = ['./', './index.html', './days.js', './manifest.json', './icon-192.png', './icon-512.png'];
 self.addEventListener('install', function (e) {
   e.waitUntil(caches.open(CACHE).then(function (c) { return c.addAll(FILES); }));
